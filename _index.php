@@ -40,54 +40,45 @@ $jp2 = $jp[$number];//jp
 $title = $arr->$jp2->jp;
 
 //chapter
-$test0 = $arr->$jp2->book;
 $test = $arr->$jp2->chapter;
-$number2 = rand(1, $test);
-// echo $number2.'</br>';
-// echo $test0.'</br>';
+$number2 = rand(0, $test - 1);
+// echo $number2;
 
 $db_name = 'db/create-table.db';
 $view="";
-$db2 = new SQLite3($db_name);
 
-$dsn = 'sqlite:db/create-table.db';
-$db = new PDO($dsn);
+try {
+  $db = new SQLite3($db_name);
+} catch (Exception $e) {
+  print 'DB接続エラー。<br>';
+  print $e->getTraceAsString();
+}
+
+while ($view == false){
 
 //verse
 $test = $arr->$jp2->chapter;
-// $number3 = rand(0, $test);
+$number3 = rand(0, $test - 1);
 // echo $number3;
 
 //key
-// $jp3 = ucfirst($jp2);
-// $jp3 = ucwords($jp2);
-// $key = $jp3.'.'.$number2.'.'.$number3;
-$key = $test0.'.'.$number2;
-echo $key;
+$jp3 = ucfirst($jp2);
+$key = $jp3.'.'.$number2.'.'.$number3;
+// echo $key;
 // return
 // $key = 'Rev.15.5';
 
-$results1 = $db->query("SELECT COUNT(*) FROM collo_bible
-WHERE key like '$key%'
-");
-$status = $results1->execute();
-$count1 = $results1->fetchColumn(); 
-$number3 = rand(1, $count1 - 1);//random
-$key3 = $test0.'.'.$number2.'.'.$number3;
-echo '..'.$key3;
-// return
-// }
-
-$results2 = $db2->query("SELECT * FROM collo_bible
-WHERE key = '$key3'
+$results = $db->query("SELECT * FROM collo_bible
+WHERE key = '$key'
 ");
 
-while ($res = $results2->fetchArray(SQLITE3_ASSOC)) {
+while ($res = $results->fetchArray(SQLITE3_ASSOC)) {
+    // $view .=  $res["text"];
+    // echo $view;
       $view =  $res["text"];
-      // echo $title.':'.$number2.'章'.$number3.': "'.$view.'"';
-    echo $title.':'.$number2.'章'.$number3.': "'.$view.'"';
+      echo $title.':'.$number2.'章'.$number3.': "'.$view.'"';
 
 }
-// }
+}
 
 ?>
